@@ -1,3 +1,21 @@
-# map_traversal
+# Map traversal
 
-https://user-images.githubusercontent.com/76774437/176939541-e9c76c5a-d306-403b-af0a-1d9fceb3f0c9.mp4
+Simple breadth-first search algorithms for 2d grid map.
+
+## Installation
+```
+make
+./map_traversal
+```
+
+## Controls
+```
+wasd 
+qezc
+r - to quit
+```
+
+## Video
+
+https://user-images.githubusercontent.com/76774437/176939983-1f9af373-e8e9-49bb-babc-62308f8e24a2.mp4
+
