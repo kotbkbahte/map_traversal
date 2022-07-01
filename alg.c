@@ -182,6 +182,12 @@ void trav_clear(void)
 
 void bfs_V2(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
 {
+    if(path_lenght > 2)
+    {
+        print("bfs_V2 does not support path_lenght > 2");
+        return;
+    }
+    
     V2_PROCESS_TILE_5(1,  1);
     V2_PROCESS_TILE_3( 0,  1);
     V2_PROCESS_TILE_5(-1,  1);
