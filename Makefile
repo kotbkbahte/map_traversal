@@ -4,7 +4,7 @@ LDFLAGS=
 
 SRC = main.c map.c alg.c
 OBJ = $(SRC:.c=.o)
-EXEC = a.out
+EXEC = map_traversal
 
 all: $(SRC) $(EXEC)
 
@@ -15,4 +15,4 @@ $(EXEC): $(OBJ)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f *.o a.out
+	rm -f *.o map_traversal
