@@ -38,6 +38,11 @@ void map_init(void)
     map_print();
 }
 
+bool is_on_map(int x, int y)
+{
+    return (0 <= x) && (x <= map_size) && (0 <= y) && (y <= map_size);
+}
+
 void map_gen(void)
 {
 
@@ -132,7 +137,7 @@ void map_print_trav(map_t* map, trav_t* trav)
         }
         map->trav_land[2 * (map_size - 1 - map->y) * map_size + 2 * map->x] = 'v';
         map->trav_land_init = true;
-
     }
+    printf("############\n");
     fwrite(map->trav_land, sizeof(char), (map_size * ( 2 * map_size) + 1), stdout);
 }
