@@ -4,6 +4,13 @@
 #include <ctype.h>
 #include <string.h>
 
+#ifdef _WIN32
+#define CLEAR "cls"
+#else //In any other OS
+#define CLEAR "clear"
+#endif
+
+
 #include "map.h"
 #include "alg.h"
 
@@ -105,26 +112,28 @@ void process_input()
 int main(int argc, char **argv)
 {
     parse_args(argc, argv);
-    printf("Controls: 'wasd' and 'qezc'\nTo leave press: 'q'");
+    printf("Controls: 'wasd' and 'qezc'\nTo leave press: 'q'\n");
 
     map_init();
     trav_init();
 
     bfs_V2(&map, &trav, map.x, map.y, path_lenght);
-    map_print_trav(&map, &trav);
-
+    printf("To start press <enter>\n");
+    if(getchar());
+    system(CLEAR);
 
     while (running) {
-
-        process_input();
-
-
         map.str_init = false;
         map.trav_land_init = false;
+
+        system(CLEAR);
         trav_clear();
         bfs_V2(&map, &trav, map.x, map.y, path_lenght);
         map_print_trav(&map, &trav);
-        // printf("Input char: ");
+
+
+
+        process_input();
     }
 
     return 0;
