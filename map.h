@@ -3,7 +3,8 @@
 
 #include <stdbool.h>
 
-enum {PLAIN, MOUNTAIN} landscapes;
+
+typedef enum {PLAIN, MOUNTAIN} landscapes;
 
 typedef struct trav_t trav_t;
 

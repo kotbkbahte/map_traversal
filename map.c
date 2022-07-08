@@ -12,6 +12,7 @@ extern int mountains_density;
 extern int path_lenght;
 extern int fast_flag;
 
+
 char landscape_str[] =
 {
     [PLAIN] = '_',

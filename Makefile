@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS= -Wall -g
 LDFLAGS=
 
-SRC = main.c map.c alg.c
+SRC = main.c map.c alg.c lite_queue.c
 OBJ = $(SRC:.c=.o)
 EXEC = map_traversal
 

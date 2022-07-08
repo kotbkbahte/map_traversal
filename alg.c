@@ -4,6 +4,8 @@
 
 #include "map.h"
 #include "alg.h"
+#include "lite_queue.h"
+#include "common.h"
 
 extern int map_size;
 
@@ -170,7 +172,8 @@ int _v2_arr3[3][3][3 * 2] =
 extern trav_t trav;
 extern int path_lenght;
 
-void trav_init(void) {
+void trav_init(void) 
+{
     trav.g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
     memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
 }
@@ -178,6 +181,19 @@ void trav_init(void) {
 void trav_clear(void)
 {
     memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
+}
+
+void bfs_V3(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
+{
+  lite_queue_t q;
+  lite_queue_init(&q);
+  lite_enqueue(&q, (vertex_t){start_x, start_y});
+    vertex_t v;
+  while( !lite_queue_is_empty(&q) )
+  {
+    v = lite_dequeue(&q);
+    printf("%d %d", v.x, v.y);
+  }
 }
 
 void bfs_V2(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
@@ -188,7 +204,7 @@ void bfs_V2(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
         return;
     }
 
-    V2_PROCESS_TILE_5(1,  1);
+    V2_PROCESS_TILE_5( 1,  1);
     V2_PROCESS_TILE_3( 0,  1);
     V2_PROCESS_TILE_5(-1,  1);
 

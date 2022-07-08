@@ -10,7 +10,7 @@
 #define CLEAR "clear"
 #endif
 
-
+#include "lite_queue.h"
 #include "map.h"
 #include "alg.h"
 
@@ -113,6 +113,8 @@ int main(int argc, char **argv)
 {
     parse_args(argc, argv);
     printf("Controls: 'wasd' and 'qezc'\nTo leave press: 'q'\n");
+
+    lite_queue_test();
 
     map_init();
     trav_init();
