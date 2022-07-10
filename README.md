@@ -2,17 +2,33 @@
 
 Simple breadth-first search algorithms for 2d grid map.
 
-## Installation
+## Build
 ```
 make
-./map_traversal
 ```
 
-## Controls
+## Run
+1. Custom settings.
 ```
-wasd 
-qezc
-r - to quit
+./map_traversal
+```
+2. Using default settings.
+```
+./map_traversal -d 
+```
+
+## Usage
+1. Move character.
+```
+wasdqezc 
+```
+2. Encrease/Decrease path length.
+```
++-
+```
+3. Quit.
+```
+r
 ```
 
 ## Video
