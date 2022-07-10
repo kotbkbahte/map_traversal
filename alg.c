@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "lite_queue.h"
 #include "map.h"
 #include "alg.h"
-#include "lite_queue.h"
 #include "common.h"
 
 extern int map_size;
@@ -185,37 +185,48 @@ int _v3_arr[] =
 extern trav_t trav;
 extern int path_lenght;
 
-void trav_init(void) 
+void trav_init(trav_t* trav) 
 {
-    trav.g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
-    memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
+  trav->g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
+  
+  lite_queue_init(&trav->q); 
+  
+  memset(trav->g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
 }
 
-void trav_reinit(int l)
+void trav_reinit(trav_t* trav, int l)
 {
-  free(trav.g);
+  free(trav->g);
   path_lenght = l;
-  trav.g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
-  memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
+  
+  lite_queue_clear(&trav->q);
+  trav->g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
+  memset(trav->g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
 }
 
-void trav_clear(void)
+void trav_clear(trav_t* trav)
 {
-    memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
+  lite_queue_clear(&trav->q);
+  memset(trav->g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
+}
+
+void trav_close(trav_t* trav)
+{
+  lite_queue_close(&trav->q);
+  free(trav->g);
 }
 
 void bfs_V3(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
 {
-  lite_queue_t q;
-  lite_queue_init(&q);
-  lite_enqueue(&q, (vertex_t){0, 0});
+  lite_queue_clear(&trav->q);
+  lite_enqueue(&trav->q, (vertex_t){0, 0});
   int vertex_count = 1, vertex_count_added = 0, vertex_count_processed = 0, range = 0;
   vertex_t vertex;
   
     
-  while( (!lite_queue_is_empty(&q)) && (range != path_lenght + 1) )
+  while( (!lite_queue_is_empty(&trav->q)) && (range != path_lenght + 1) )
   {
-    vertex = lite_dequeue(&q);
+    vertex = lite_dequeue(&trav->q);
     
     if( vertex_count == vertex_count_processed )
     {
@@ -227,6 +238,7 @@ void bfs_V3(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
     
     vertex_count_processed++;
         
+       
     if(trav->g[(path_lenght + vertex.y) * (2 * path_lenght + 1) + (path_lenght + vertex.x) ].processed) 
     {
       continue;
@@ -239,15 +251,19 @@ void bfs_V3(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
       
       for(int i = 0; i < 8; i++)
       {
-        if(!is_on_trav(path_lenght + vertex.x + _v3_arr[2 * i + 0], path_lenght + vertex.y + _v3_arr[2 * i + 1]))
+        if(!is_on_trav(trav, path_lenght + vertex.x + _v3_arr[2 * i + 0], path_lenght + vertex.y + _v3_arr[2 * i + 1]))
           continue;
-        if(!is_on_map(start_x + vertex.x + _v3_arr[2 * i + 0], start_y + vertex.y + _v3_arr[2 * i + 1]))
+        if(!is_on_map(map, start_x + vertex.x + _v3_arr[2 * i + 0], start_y + vertex.y + _v3_arr[2 * i + 1]))
           continue;
-        lite_enqueue(&q, (vertex_t){vertex.x + _v3_arr[2 * i + 0], vertex.y + _v3_arr[2 * i + 1]});  
+        if(trav->g[(path_lenght + vertex.y + _v3_arr[2 * i + 1]) * (2 * path_lenght + 1) + 
+          (path_lenght + vertex.x + _v3_arr[2 * i + 0]) ].processed)
+          continue;
+        lite_enqueue(&trav->q, (vertex_t){vertex.x + _v3_arr[2 * i + 0], vertex.y + _v3_arr[2 * i + 1]});  
         vertex_count_added += 1;
       }
     }
   }
+  
 }
 
 void bfs_V2(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
@@ -289,16 +305,18 @@ void bfs_V1(map_t* map, int start_x, int start_y, int path_lenght)
     PROCESS_TILE_5(-1, -1);
 }
 
-bool is_on_trav(int x, int y)
+bool is_on_trav(trav_t* trav, int x, int y)
 {
     return (0 <= x) && (x < 2 * path_lenght + 1) && (0 <= y) && (y < 2 * path_lenght + 1);
 }
 
-void trav_print(void)
+void trav_print(trav_t* trav)
 {
-    for (size_t i = 0; i < 2 * path_lenght + 1; i++) {
-        for (size_t j = 0; j < 2 * path_lenght + 1; j++) {
-            printf("%d ", trav.g[(2 * path_lenght - i) * (2 * path_lenght + 1) + j].range);
+    for (size_t i = 0; i < 2 * path_lenght + 1; i++) 
+    {
+        for (size_t j = 0; j < 2 * path_lenght + 1; j++) 
+        {
+            printf("%d ", trav->g[(2 * path_lenght - i) * (2 * path_lenght + 1) + j].range);
         }
         printf("\n");
     }

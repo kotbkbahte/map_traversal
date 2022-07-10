@@ -11,9 +11,33 @@ void lite_queue_init(lite_queue_t* q)
   q->rear = 0;
   q->front = 0;
 }
+
+void lite_queue_close(lite_queue_t* q)
+{
+  free(q->q);
+}
+
+void lite_queue_clear(lite_queue_t* q)
+{
+  q->rear = 0;
+  q->front = 0;
+}
+
 void lite_enqueue(lite_queue_t* q, vertex_t v)
 {
-  if(q->front == MAX_LITE_QUEUE_SIZE) {perror("Max lite queue size reached.\n"); exit(-1);} 
+  if(q->front == MAX_LITE_QUEUE_SIZE) 
+  {
+    if(q->rear > 0) 
+    {
+      memmove(q->q + 0, q->q + q->rear, sizeof(vertex_t) * (q->front - q->rear) );
+      q->front = q->front - q->rear;
+      q->rear = 0;
+    } 
+    else
+    {
+      perror("Max lite queue size reached.\n"); exit(-1);    
+    }
+  } 
   q->q[q->front] = v;
   q->front++;
 }
