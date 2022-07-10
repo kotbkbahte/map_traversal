@@ -131,7 +131,7 @@ int main(int argc, char **argv)
       return 1;
     } 
     
-    printf("Controls: 'wasd' and 'qezc'\nTo leave press: 'q'\n");
+    printf("Controls: \nTo move: w/a/s/d/q/e/z/c\nTo encrease/decrease path lenght: +/-\nTo leave: q\n");
 
     
     map_init();
