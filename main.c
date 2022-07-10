@@ -125,10 +125,9 @@ int main(int argc, char **argv)
       map_init();
       trav_reinit(12);
       lite_queue_test();
-/*      trav_print();*/
       bfs_V3(&map, &trav, map.x, map.y, path_lenght);
       map_print_trav(&map, &trav);
-/*      trav_print();*/
+
       return 1;
     } 
     
