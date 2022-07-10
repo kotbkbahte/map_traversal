@@ -104,8 +104,16 @@ void process_input()
       case 'e': map.x++; map.y++; break;
       case 'c': map.x++; map.y--; break;
       case 'z': map.x--; map.y--; break;
-      case '+': if(path_lenght == 9) {printf("Path length must be <= 9.\n"); break;} path_lenght++; break;
-      case '-': if(path_lenght == 1) {printf("Path length must be >= 1.\n"); break;} path_lenght--; break;
+      case '+': 
+        if(path_lenght == 9) {printf("Path length must be <= 9.\n"); break;} 
+        path_lenght++; 
+        trav_reinit(path_lenght);
+        break;
+      case '-': 
+        if(path_lenght == 1) {printf("Path length must be >= 1.\n"); break;} 
+        path_lenght--; 
+        trav_reinit(path_lenght);
+        break;
       case 'r': running = false; break;
     }
 
@@ -126,22 +134,21 @@ int main(int argc, char **argv)
       trav_reinit(12);
       lite_queue_test();
       bfs_V3(&map, &trav, map.x, map.y, path_lenght);
-      map_print_trav(&map, &trav);
+/*      map_print_trav(&map, &trav);*/
 
       return 1;
     } 
     
-    printf("Controls: \nTo move: w/a/s/d/q/e/z/c\nTo encrease/decrease path lenght: +/-\nTo leave: q\n");
+    printf("Controls: \nTo move: w/a/s/d/q/e/z/c\nTo encrease/decrease path lenght: +/-\nTo leave: r\n");
 
     
     map_init();
     trav_init();
 
-    bfs_V3(&map, &trav, map.x, map.y, path_lenght);
+/*    bfs_V3(&map, &trav, map.x, map.y, path_lenght);*/
+
     printf("To start press <enter>\n");
     if(getchar());
-    system(CLEAR);
-
 
     
     while (running) {
@@ -149,10 +156,9 @@ int main(int argc, char **argv)
         map.trav_land_init = false;
         
         system(CLEAR);
-        trav_reinit(path_lenght);
         bfs_V3(&map, &trav, map.x, map.y, path_lenght);
         map_print_trav(&map, &trav);
-        trav_print();
+/*        trav_print();*/
 
 
         process_input();

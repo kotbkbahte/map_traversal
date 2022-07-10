@@ -193,6 +193,7 @@ void trav_init(void)
 
 void trav_reinit(int l)
 {
+  free(trav.g);
   path_lenght = l;
   trav.g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
   memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
