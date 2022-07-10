@@ -30,8 +30,8 @@ void set_default(void)
     map_size          = DEFAULT_MAP_SIZE;
     mountains_density = DEFAULT_MOUNTAINS_DENSITY;
     path_lenght       = DEFAULT_PATH_LENGTH;
-    map.x = map_size / 2;
-    map.y = map_size / 2;
+    map.x = DEFAULT_X;
+    map.y = DEFAULT_Y;
 /*    map.x = 2;*/
 /*    map.y = 2;*/
 }
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
       trav_clear(&trav);
       bfs_V3(&map, &trav, map.x, map.y, path_lenght);
       map_print_trav(&map, &trav);
-      trav_print(&trav);
+/*      trav_print(&trav);*/
 
 
       process_input();

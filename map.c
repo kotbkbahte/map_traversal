@@ -14,6 +14,8 @@ extern int path_lenght;
 extern int fast_flag;
 
 
+#define CHARACTER '@'
+
 char landscape_str[] =
 {
     [PLAIN] = ' ',
@@ -120,7 +122,7 @@ void map_print_trav(map_t* map, trav_t* trav)
                 }
             }
         }
-        map->trav_land[2 * (map->size - 1 - map->y) * map->size + 2 * map->x] = 'v';
+        map->trav_land[2 * (map->size - 1 - map->y) * map->size + 2 * map->x] = CHARACTER;
         map->trav_land_init = true;
     }
     fwrite(map->trav_land, sizeof(char), (map->size * ( 2 * map->size) + 1), stdout);
