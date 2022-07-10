@@ -13,6 +13,7 @@ void lite_queue_init(lite_queue_t* q)
 }
 void lite_enqueue(lite_queue_t* q, vertex_t v)
 {
+  if(q->front == MAX_LITE_QUEUE_SIZE) {perror("Max lite queue size reached.\n"); exit(-1);} 
   q->q[q->front] = v;
   q->front++;
 }
@@ -39,14 +40,33 @@ void lite_queue_test(void)
   lite_enqueue(&q, (vertex_t){2, 0});
   lite_enqueue(&q, (vertex_t){3, 0});
 
+    lite_queue_print(&q);
 
   v = lite_dequeue(&q);
   printf("%d %d\n", v.x, v.y);
+    
+    lite_queue_print(&q);
+  
+  
   v = lite_dequeue(&q);
   printf("%d %d\n", v.x, v.y);
+  
   v = lite_dequeue(&q);
   printf("%d %d\n", v.x, v.y);
   
 }
+
+void lite_queue_print(lite_queue_t* q)
+{
+  if(lite_queue_is_empty(q)) { printf("Queue is empty.\n"); return; }
+  printf("Queue: [");
+  for(int i = q->rear; i < q->front; i++)
+  {
+    printf("{%d, %d}, ", q->q[i].x, q->q[i].y);
+  }
+  printf("]\n");
+}
+
+
 
 

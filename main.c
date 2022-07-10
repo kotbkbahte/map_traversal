@@ -19,17 +19,18 @@ int map_size;
 int mountains_density;
 int path_lenght;
 int fast_flag = false;
+int test_flag = false;
 bool default_settings = false;
 map_t map;
 trav_t trav;
 
 void set_default(void)
 {
-    map_size = 12;
+    map_size = 24;
     mountains_density = 4;
-    path_lenght = 2;
-    map.x = 6;
-    map.y = 4;
+    path_lenght = 4;
+    map.x = map_size / 2;
+    map.y = map_size / 2;
 }
 
 void set_custom(void)
@@ -47,7 +48,7 @@ void set_custom(void)
 static inline int parse_args(int argc, char **argv)
 {
     int c;
-    while ((c = getopt(argc, argv, "fd")) != -1)
+    while ((c = getopt(argc, argv, "fdt")) != -1)
         switch (c)
             {
             case 'd':
@@ -56,6 +57,9 @@ static inline int parse_args(int argc, char **argv)
             case 'f':
                 fast_flag = true;
                 break;
+            case 't':
+              test_flag = true;
+              break;
             case '?':
                 fprintf(stderr, "Usage:\n-d\t set's default settings. Overwise custom settings\n");
                 return 1;
@@ -91,15 +95,18 @@ void process_input()
 
     switch(c)
     {
-        case 'w': map.y++; break;
-        case 's': map.y--; break;
-        case 'a': map.x--; break;
-        case 'd': map.x++; break;
-        case 'q': map.x--; map.y++; break;
-        case 'e': map.x++; map.y++; break;
-        case 'c': map.x++; map.y--; break;
-        case 'z': map.x--; map.y--; break;
-        case 'r': running = false; break;
+      case 't': test_flag = true; break;
+      case 'w': map.y++; break;
+      case 's': map.y--; break;
+      case 'a': map.x--; break;
+      case 'd': map.x++; break;
+      case 'q': map.x--; map.y++; break;
+      case 'e': map.x++; map.y++; break;
+      case 'c': map.x++; map.y--; break;
+      case 'z': map.x--; map.y--; break;
+      case '+': if(path_lenght == 9) {printf("Path length must be <= 9.\n"); break;} path_lenght++; break;
+      case '-': if(path_lenght == 1) {printf("Path length must be >= 1.\n"); break;} path_lenght--; break;
+      case 'r': running = false; break;
     }
 
     if( (!is_on_map(map.x, map.y)) ||
@@ -112,27 +119,41 @@ void process_input()
 int main(int argc, char **argv)
 {
     parse_args(argc, argv);
+    
+    if(test_flag)
+    {
+      map_init();
+      trav_reinit(12);
+      lite_queue_test();
+/*      trav_print();*/
+      bfs_V3(&map, &trav, map.x, map.y, path_lenght);
+      map_print_trav(&map, &trav);
+/*      trav_print();*/
+      return 1;
+    } 
+    
     printf("Controls: 'wasd' and 'qezc'\nTo leave press: 'q'\n");
 
-    lite_queue_test();
-
+    
     map_init();
     trav_init();
 
-    bfs_V2(&map, &trav, map.x, map.y, path_lenght);
+    bfs_V3(&map, &trav, map.x, map.y, path_lenght);
     printf("To start press <enter>\n");
     if(getchar());
     system(CLEAR);
 
+
+    
     while (running) {
         map.str_init = false;
         map.trav_land_init = false;
-
+        
         system(CLEAR);
-        trav_clear();
-        bfs_V2(&map, &trav, map.x, map.y, path_lenght);
+        trav_reinit(path_lenght);
+        bfs_V3(&map, &trav, map.x, map.y, path_lenght);
         map_print_trav(&map, &trav);
-
+        trav_print();
 
 
         process_input();

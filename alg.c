@@ -8,7 +8,7 @@
 #include "common.h"
 
 extern int map_size;
-
+extern int test_flag;
 
 #define _tile(x, y) map->tiles[map_size * (y) + (x)]
 #define _t(x, y) map->tiles[map_size * (y + start_y) + (x + start_x)]
@@ -169,6 +169,19 @@ int _v2_arr3[3][3][3 * 2] =
    -1 0 1
 */
 
+int _v3_arr[] = 
+{
+   1,  0,
+   1,  1,
+   0,  1,
+  -1,  1,
+   
+  -1,  0,
+  -1, -1,
+   0, -1,
+   1, -1,
+};
+
 extern trav_t trav;
 extern int path_lenght;
 
@@ -176,6 +189,13 @@ void trav_init(void)
 {
     trav.g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
     memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
+}
+
+void trav_reinit(int l)
+{
+  path_lenght = l;
+  trav.g = malloc(sizeof(trav_tile_t) * (2 * path_lenght + 1) * (2 * path_lenght + 1) );
+  memset(trav.g, 0, sizeof(trav_tile_t) *  (2 * path_lenght + 1) * (2 * path_lenght + 1));
 }
 
 void trav_clear(void)
@@ -187,12 +207,45 @@ void bfs_V3(map_t* map, trav_t* trav, int start_x, int start_y, int path_lenght)
 {
   lite_queue_t q;
   lite_queue_init(&q);
-  lite_enqueue(&q, (vertex_t){start_x, start_y});
-    vertex_t v;
-  while( !lite_queue_is_empty(&q) )
+  lite_enqueue(&q, (vertex_t){0, 0});
+  int vertex_count = 1, vertex_count_added = 0, vertex_count_processed = 0, range = 0;
+  vertex_t vertex;
+  
+    
+  while( (!lite_queue_is_empty(&q)) && (range != path_lenght + 1) )
   {
-    v = lite_dequeue(&q);
-    printf("%d %d", v.x, v.y);
+    vertex = lite_dequeue(&q);
+    
+    if( vertex_count == vertex_count_processed )
+    {
+      vertex_count           = vertex_count_added;
+      vertex_count_added     = 0;
+      vertex_count_processed = 0;
+      range++;
+    }
+    
+    vertex_count_processed++;
+        
+    if(trav->g[(path_lenght + vertex.y) * (2 * path_lenght + 1) + (path_lenght + vertex.x) ].processed) 
+    {
+      continue;
+    }
+    
+    if(map->tiles[(start_y + vertex.y) * map_size + (start_x + vertex.x)].landscape == PLAIN) // if can visit this tile
+    {      
+      trav->g[(path_lenght + vertex.y) * (2 * path_lenght + 1) + (path_lenght + vertex.x) ].processed = true;
+      trav->g[(path_lenght + vertex.y) * (2 * path_lenght + 1) + (path_lenght + vertex.x) ].range = range;
+      
+      for(int i = 0; i < 8; i++)
+      {
+        if(!is_on_trav(path_lenght + vertex.x + _v3_arr[2 * i + 0], path_lenght + vertex.y + _v3_arr[2 * i + 1]))
+          continue;
+        if(!is_on_map(start_x + vertex.x + _v3_arr[2 * i + 0], start_y + vertex.y + _v3_arr[2 * i + 1]))
+          continue;
+        lite_enqueue(&q, (vertex_t){vertex.x + _v3_arr[2 * i + 0], vertex.y + _v3_arr[2 * i + 1]});  
+        vertex_count_added += 1;
+      }
+    }
   }
 }
 
@@ -235,6 +288,10 @@ void bfs_V1(map_t* map, int start_x, int start_y, int path_lenght)
     PROCESS_TILE_5(-1, -1);
 }
 
+bool is_on_trav(int x, int y)
+{
+    return (0 <= x) && (x < 2 * path_lenght + 1) && (0 <= y) && (y < 2 * path_lenght + 1);
+}
 
 void trav_print(void)
 {

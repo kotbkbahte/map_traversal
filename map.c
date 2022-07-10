@@ -19,12 +19,6 @@ char landscape_str[] =
     [MOUNTAIN] = 'M',
 };
 
-char range_str[] =
-{
-    [0] = '0',
-    [1] = '1',
-    [2] = '2'
-};
 
 void map_init(void)
 {
@@ -41,7 +35,7 @@ void map_init(void)
 
 bool is_on_map(int x, int y)
 {
-    return (0 <= x) && (x <= map_size) && (0 <= y) && (y <= map_size);
+    return (0 <= x) && (x < map_size) && (0 <= y) && (y < map_size);
 }
 
 void map_gen(void)
@@ -50,7 +44,7 @@ void map_gen(void)
     for (size_t i = 0; i < map_size; i++) {
         for (size_t j = 0; j < map_size; j++) {
             map.tiles[i * map_size + j].processed = false;
-            if(rand() % 4)
+            if(rand() % mountains_density)
                 map.tiles[i * map_size + j].landscape = PLAIN;
             else
                 map.tiles[i * map_size + j].landscape = MOUNTAIN;
@@ -127,11 +121,13 @@ void map_print_trav(map_t* map, trav_t* trav)
         map->trav_land_init = true;
 
         for (size_t i = 0; i < 2 * path_lenght + 1; i++) {
-            for (size_t j = 0; j < 2 * path_lenght + 1; j++) {
+            for (size_t j = 0; j < 2 * path_lenght + 1; j++) 
+            {
+                if(!is_on_map(j + map->x - path_lenght, map_size - 1 - (i + map->y - path_lenght))) continue;
                 if(trav->g[(i) * (path_lenght * 2 + 1) + (j)].range != 0)
                 {
                     map->trav_land[2 * (map_size - 1 - (i + map->y - path_lenght)) * map_size + 2 * (j + map->x - path_lenght)] =
-                        range_str[ trav->g[(i) * (path_lenght * 2 + 1) + (j)].range ];
+                        trav->g[(i) * (path_lenght * 2 + 1) + (j)].range + '0';
 
                 }
             }

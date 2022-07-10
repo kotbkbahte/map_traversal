@@ -6,7 +6,7 @@
 typedef struct vertex_t vertex_t;
 
 /* fixed length queue */
-#define MAX_LITE_QUEUE_SIZE 128
+#define MAX_LITE_QUEUE_SIZE 4096
 
 typedef struct lite_queue_t
 {
@@ -23,6 +23,7 @@ vertex_t lite_dequeue(lite_queue_t* q);
 bool lite_queue_is_empty(lite_queue_t* q);
 
 void lite_queue_test(void);
+void lite_queue_print(lite_queue_t* q); 
 
 
 #endif /* end of include guard: LITE_QUEUE_H_INCLUDED */

@@ -29,6 +29,7 @@ void map_gen(void);
 void map_print(void);
 void map_print_processed(void);
 void map_print_trav(map_t* map, trav_t* trav);
+/*bool map_process_tile(map_t* map, int x, int y); */
 bool is_on_map(int x, int y);
 
 
